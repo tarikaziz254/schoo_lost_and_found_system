@@ -1,0 +1,18 @@
+{% extends "items/base.html"%}
+{% block content%}
+<h2>Lost and Found Items</h2>
+{% for item in items %}
+    <div>
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.description }}</p>
+        <p>{{ item.location }} - {{ item.date_lost_or_found }}</p>
+        <img src="{{ item.photo.url }}" alt="{{ item.title }}" style="width:100px;height:100px;">
+        {% if user.is_staff %}
+            <a href="{% url 'update-item' item.pk %}">Edit</a>
+        {% endif %}
+        {% if item.user == user and item.collected %}
+            <a href="{% url 'delete-item' item.pk %}">Delete</a>
+        {% endif %}
+    </div>
+{% endfor %}
+{% endblock content%}
