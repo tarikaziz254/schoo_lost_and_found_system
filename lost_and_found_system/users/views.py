@@ -22,7 +22,8 @@ class RegisterView(View):
 
 class UserLoginView(LoginView):
     template_name = 'users/login.html'
+    next_page = ''
 
 class UserLogoutView(LogoutView):
     template_name = 'users/logout.html'
-    next_page = 'item-list'
+    next_page = 'login'
