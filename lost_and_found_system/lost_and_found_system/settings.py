@@ -132,3 +132,11 @@ LOGIN_REDIRECT_URL = 'item-list'
 LOGOUT_REDIRECT_URL = 'login'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'tariaziz2242@gmail.com'
+EMAIL_HOST_PASSWORD = '22427843Tk!!??'
+
+

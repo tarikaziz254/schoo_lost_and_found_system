@@ -5,6 +5,7 @@ from .forms import ItemForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .forms import ReportItemForm
 from django.shortcuts import redirect
+from django.core.exceptions import PermissionDenied
 
 class ItemListView(LoginRequiredMixin, ListView):
     model = Item
@@ -50,12 +51,15 @@ class ItemUpdateView(LoginRequiredMixin, UserPassesTestMixin,UpdateView):
 
 class ItemDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Item
-    template_name = 'items/delete_item.html'
+    template_name = 'items/item_delete.html'
     success_url = reverse_lazy('item-list')
+    
 
     def test_func(self):
-        item = self.get_object()
-        return self.request.user == item.user and item.collected
+        # Only staff or superuser can delete
+        if self.request.user.is_staff or self.request.user.is_superuser:
+            return True
+        raise PermissionDenied()
     
 
 class ItemReportView(LoginRequiredMixin,CreateView):
@@ -67,4 +71,32 @@ class ItemReportView(LoginRequiredMixin,CreateView):
     def form_valid(self, form):
         # Ensure the logged-in user is assigned to the item
         form.instance.user = self.request.user
+        return super().form_valid(form)
+
+from django.views.generic import FormView
+from .forms import ContactForm
+from django.core.mail import send_mail
+from django.conf import settings
+
+class ContactStaffView(FormView):
+    template_name = 'items/contact_staff.html'  # The template to render
+    form_class = ContactForm  # The form to use
+    success_url = reverse_lazy('contact-success')  # Redirect to a success page upon successful form submission
+
+    def form_valid(self, form):
+        # Get the form data
+        name = form.cleaned_data['name']
+        email = form.cleaned_data['email']
+        message = form.cleaned_data['message']
+        phone_number = form.cleaned_data['phone_number']
+        whatsapp_number = form.cleaned_data['whatsapp_number']
+        
+        # Send an email with the form data
+        send_mail(
+            f"Message from {name}",
+            f"Email: {email}\nPhone: {phone_number}\nWhatsApp: {whatsapp_number}\nMessage: {message}",
+            email,
+            ['staff@example.com'],  # Replace with the actual staff email
+        )
+        
         return super().form_valid(form)

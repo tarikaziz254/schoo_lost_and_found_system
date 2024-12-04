@@ -10,10 +10,7 @@
             <p>Found at: {{ item.location }} - {{ item.date_lost_or_found }}</p>
             <img src="{{ item.photo.url }}" alt="{{ item.title }}" style="width:100px;height:100px;">
             {% if user.is_staff %}
-                <a href="{% url 'update-item' item.pk %}">Edit</a>
-            {% endif %}
-            {% if item.user == user and item.collected %}
-                <a href="{% url 'delete-item' item.pk %}">Delete</a>
+                <a href="{% url 'delete-item' item.pk %}" class="btn btn-danger">Delete Item</a>
             {% endif %}
         </div>
     {% endfor %}

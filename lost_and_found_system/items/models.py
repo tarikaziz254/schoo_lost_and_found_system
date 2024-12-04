@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 class Item(models.Model):
     STATUS_CHOICES = [
@@ -9,7 +10,7 @@ class Item(models.Model):
     ]
     title = models.CharField(max_length=100)
     description = models.TextField()
-    date_lost_or_found = models.DateField()
+    date_lost_or_found = models.DateTimeField(default=timezone.now)
     location = models.CharField(max_length=100)
     photo = models.ImageField(upload_to='item_photos/')
     collected = models.BooleanField(default=False)
